@@ -1,0 +1,29 @@
+.skid {
+  overflow: hidden;
+  width: 100%;
+  backface-visibility: hidden; // Improve browser rendering bugs
+  > .slides {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    cursor: grab;
+    transition: 1s;
+    > li {
+      display: inline-block;
+      width: 100%;
+      vertical-align: top;
+      white-space: normal;
+    }
+  }
+  &.panning {
+    user-select: none;
+    img {
+      -webkit-user-drag: none;
+    }
+    > .slides {
+      cursor: grabbing;
+      transition: none;
+    }
+  }
+}

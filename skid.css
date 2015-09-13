@@ -1,0 +1,40 @@
+.skid {
+  overflow: hidden;
+  width: 100%;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+}
+
+.skid > .slides {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  cursor: -webkit-grab;
+  cursor: grab;
+  transition: 1s;
+}
+
+.skid > .slides > li {
+  display: inline-block;
+  width: 100%;
+  vertical-align: top;
+  white-space: normal;
+}
+
+.skid.panning {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.skid.panning img {
+  -webkit-user-drag: none;
+}
+
+.skid.panning > .slides {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+  transition: none;
+}

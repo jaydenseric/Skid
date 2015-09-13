@@ -1,0 +1,54 @@
+body {
+  padding: 1em;
+  text-align: center;
+  font: 20px sans-serif;
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+.skid {
+  display: inline-block;
+  vertical-align: middle;
+  .slides {
+    li {
+      box-sizing: border-box;
+      padding: 10vmin 1em;
+      &:nth-child(1) {
+        background-color: tomato;
+      }
+      &:nth-child(2) {
+        background-color: skyblue;
+      }
+      &:nth-child(3) {
+        background-color: orchid;
+      }
+    }
+    h2 {
+      margin: 0;
+      font-size: 10vmin;
+    }
+    img {
+      margin-top: 1em;
+      vertical-align: middle;
+    }
+  }
+  nav {
+    padding: 1em;
+    ol,
+    li,
+    a {
+      display: inline-block;
+    }
+    ol {
+      margin: 0;
+      padding: 0;
+    }
+    a {
+      padding: .2em .3em;
+      &.active {
+        background-color: rgba(black, .15);
+      }
+    }
+  }
+}

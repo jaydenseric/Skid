@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Skid demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="skid.css" />
+    <link rel="stylesheet" href="demo.css" />
+  </head>
+  <body>
+    <section class="skid">
+      <ol class="slides">
+        <li class="active" id="first">
+          <h2>First</h2>
+          <img src="demo.svg" alt="Demo image" />
+        </li><li id="second">
+          <h2>Second</h2>
+          <img src="demo.svg" alt="Demo image" />
+        </li><li id="third">
+          <h2>Third</h2>
+          <img src="demo.svg" alt="Demo image" />
+        </li>
+      </ol>
+      <nav>
+        <a href="#third" class="prior">Prior</a>
+        <ol>
+          <li><a href="#first" class="active">1</a></li>
+          <li><a href="#second">2</a></li>
+          <li><a href="#third">3</a></li>
+        </ol>
+        <a href="#second" class="next">Next</a>
+      </nav>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom4/1.4.8/dom4.js"></script>
+    <script src="hurdler.js"></script>
+    <script src="skid.js"></script>
+    <script src="demo.js"></script>
+  </body>
+</html>
