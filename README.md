@@ -1,4 +1,4 @@
-# Skid
+# ![Skid](http://jaydenseric.com/shared/skid-logo.svg)
 
 Skid is an ultra-lightweight slider written in plain JS.
 
