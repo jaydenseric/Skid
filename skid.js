@@ -3,7 +3,7 @@
  * @class
  * @param {HTMLElement} container - The element containing all components.
  * @classdesc A slider utilizing Hurdler for URL hash based control.
- * @version 0.1.1
+ * @version 0.1.2
  * @author Jayden Seric
  * @copyright 2015
  * @license MIT
@@ -20,6 +20,10 @@ function Skid(container) {
   self.nextSlide        = self.slides.firstElementChild;
   self.nextLink         = self.element.query('> nav .next');
   self.tabs             = self.element.query('> nav ol');
+  // Prevent dragging images from disrupting dragging slides
+  self.element.queryAll('img').forEach(function(image) {
+    image.addEventListener('dragstart', function(event) { event.preventDefault() });
+  });
   // Enables interactions
   function enable(startEventName, panEventName, endEventName) {
     Array.prototype.forEach.call(self.slides.children, function(slide) {

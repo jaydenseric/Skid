@@ -15,12 +15,12 @@
       vertical-align: top;
       white-space: normal;
     }
-  }
-  &.panning {
-    user-select: none;
     img {
       -webkit-user-drag: none;
     }
+  }
+  &.panning {
+    user-select: none;
     > .slides {
       cursor: grabbing;
       transition: none;

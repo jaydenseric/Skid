@@ -22,15 +22,15 @@
   white-space: normal;
 }
 
+.skid > .slides img {
+  -webkit-user-drag: none;
+}
+
 .skid.panning {
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
-}
-
-.skid.panning img {
-  -webkit-user-drag: none;
 }
 
 .skid.panning > .slides {
