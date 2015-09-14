@@ -77,7 +77,7 @@ function Skid(container) {
  * @param {object} event - Event object.
  */
 Skid.prototype.normalizeEventX = function(event) {
-  return event.type == 'touchstart' || event.type == 'touchmove' ? event.originalEvent.touches[0].clientX : event.clientX;
+  return event.type == 'touchstart' || event.type == 'touchmove' ? event.touches[0].clientX : event.clientX;
 };
 
 /**
