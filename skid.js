@@ -3,7 +3,7 @@
  * @class
  * @param {HTMLElement} container - The element containing all components.
  * @classdesc A slider utilizing Hurdler for URL hash based control.
- * @version 0.1.0
+ * @version 0.1.1
  * @author Jayden Seric
  * @copyright 2015
  * @license MIT
@@ -81,12 +81,32 @@ Skid.prototype.normalizeEventX = function(event) {
 };
 
 /**
- * Pans the slider.
+ * Pans the slides.
  * @method
  * @param {number} position - Positive or negative value as a percentage of a single slide.
  */
 Skid.prototype.pan = function(position) {
-  this.slides.style.transform = 'translate3d(' + position + '%, 0, 0)';
+  var self = this;
+  if (self.transform == undefined) {
+    // Determine CSS 3D transform property
+    self.transform = false;
+    var props = {
+      'perspective'       : 'transform',
+      'webkitPerspective' : 'webkitTransform',
+      'OPerspective'      : 'OTransform',
+      'msPerspective'     : 'msTransform'
+    };
+    for (var prop in props) {
+      if (props.hasOwnProperty(prop) && prop in document.documentElement.style) {
+        self.transform = props[prop];
+        break;
+      }
+    }
+  }
+  // Hardware accelerated pan
+  if (self.transform) self.slides.style[self.transform] = 'translate3d(' + position + '%,0,0)';
+  // Fallback pan
+  else self.slides.style.marginLeft = position + '%';
 };
 
 /**

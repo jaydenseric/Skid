@@ -12,7 +12,7 @@ Try the [demo](http://rawgit.com/jaydenseric/Skid/master/demo.html).
 
 ## Browser support
 
-Evergreen browsers.
+Evergreen browsers for now; IE9 should work but hasn't been tested.
 
 Be sure to use the [DOM4 polyfill](https://github.com/WebReflection/dom4) or manually handle:
 
