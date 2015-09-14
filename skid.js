@@ -3,7 +3,7 @@
  * @class
  * @param {HTMLElement} container - The element containing all components.
  * @classdesc A slider utilizing Hurdler for URL hash based control.
- * @version 0.1.2
+ * @version 0.1.3
  * @author Jayden Seric
  * @copyright 2015
  * @license MIT
@@ -55,7 +55,7 @@ function Skid(container) {
           // If any distance was dragged, update active slide
           if (x != originalX) {
             // Flick gesture must be at least 80px long
-            if (flick && Math.abs(originalX - x) > 80) self.activateSlide(originalX < x ? self.priorSlide.id : self.nextSlide.id);
+            if (flick && Math.abs(originalX - x) > 80) hurdler.setHash(originalX < x ? self.priorSlide.id : self.nextSlide.id);
             else {
               var closestSlideIndex = Math.round(pan / -100);
               if (closestSlideIndex < 0) closestSlideIndex = 0;
