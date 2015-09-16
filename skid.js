@@ -1,16 +1,45 @@
 /**
- * Constructs a new Skid instance.
- * @class
- * @param {HTMLElement} container - The element containing all components.
- * @classdesc A slider utilizing Hurdler for URL hash based control.
- * @version 0.1.3
+ * A slider utilizing Hurdler for URL hash based control.
+ * @namespace Skid
+ * @see https://github.com/jaydenseric/Skid
+ * @version 1.0.0
  * @author Jayden Seric
- * @copyright 2015
  * @license MIT
  */
-function Skid(container) {
-  var self = container.skid = this;
-  self.element          = container;
+var Skid = Skid || {};
+
+/**
+ * @property {(string|boolean)} transform - The CSS transform property for the slider to use, or false indicating no CSS 3D support.
+ */
+Skid.transform = (function() {
+  var props = {
+    'perspective'       : 'transform',
+    'webkitPerspective' : 'webkitTransform',
+    'OPerspective'      : 'OTransform',
+    'msPerspective'     : 'msTransform'
+  };
+  for (var prop in props) {
+    if (props.hasOwnProperty(prop) && prop in document.documentElement.style) return props[prop];
+  }
+  return false;
+})();
+
+/**
+ * Returns a normalized mouse or touch event X coordinate.
+ * @param {object} event - Event object.
+ * @returns {number} The event X coordinate.
+ */
+Skid.normalizeEventX = function(event) {
+  return event.type == 'touchstart' || event.type == 'touchmove' ? event.touches[0].clientX : event.clientX;
+};
+
+/**
+ * Constructs a new Skid slider instance.
+ * @param {HTMLElement} element - The element containing all components.
+ */
+Skid.Slider = function(element) {
+  var self = element.slider = this;
+  self.element          = element;
   self.slides           = self.element.query('> .slides');
   self.slideCount       = self.slides.children.length;
   self.activeSlideIndex = 0;
@@ -39,10 +68,10 @@ function Skid(container) {
         self.element.classList.add('panning');
         var offset      = self.slides.getBoundingClientRect().left + document.body.scrollLeft,
             width       = self.slides.offsetWidth,
-            originalX   = x = self.normalizeEventX(event) - offset,
+            originalX   = x = Skid.normalizeEventX(event) - offset,
             originalPan = pan = self.activeSlideIndex * -100;
         function drag(event) {
-          x   = self.normalizeEventX(event) - offset;
+          x   = Skid.normalizeEventX(event) - offset;
           pan = originalPan + (x - originalX) / width * 100;
           self.pan(pan);
         }
@@ -57,6 +86,7 @@ function Skid(container) {
             // Flick gesture must be at least 80px long
             if (flick && Math.abs(originalX - x) > 80) hurdler.setHash(originalX < x ? self.priorSlide.id : self.nextSlide.id);
             else {
+              // Determine the closest slide to activate and pan to
               var closestSlideIndex = Math.round(pan / -100);
               if (closestSlideIndex < 0) closestSlideIndex = 0;
               if (closestSlideIndex > self.slideCount - 1) closestSlideIndex = self.slideCount - 1;
@@ -73,52 +103,24 @@ function Skid(container) {
   // Enable mouse and touch interaction
   enable('mousedown', 'mousemove', 'mouseup');
   enable('touchstart', 'touchmove', 'touchend');
-}
-
-/**
- * Returns a normalized mouse or touch event X coordinate.
- * @method
- * @param {object} event - Event object.
- */
-Skid.prototype.normalizeEventX = function(event) {
-  return event.type == 'touchstart' || event.type == 'touchmove' ? event.touches[0].clientX : event.clientX;
 };
 
 /**
- * Pans the slides.
- * @method
+ * Pans the slider.
  * @param {number} position - Positive or negative value as a percentage of a single slide.
  */
-Skid.prototype.pan = function(position) {
-  var self = this;
-  if (self.transform == undefined) {
-    // Determine CSS 3D transform property
-    self.transform = false;
-    var props = {
-      'perspective'       : 'transform',
-      'webkitPerspective' : 'webkitTransform',
-      'OPerspective'      : 'OTransform',
-      'msPerspective'     : 'msTransform'
-    };
-    for (var prop in props) {
-      if (props.hasOwnProperty(prop) && prop in document.documentElement.style) {
-        self.transform = props[prop];
-        break;
-      }
-    }
-  }
+Skid.Slider.prototype.pan = function(position) {
   // Hardware accelerated pan
-  if (self.transform) self.slides.style[self.transform] = 'translate3d(' + position + '%,0,0)';
+  if (Skid.transform) this.slides.style[Skid.transform] = 'translate3d(' + position + '%,0,0)';
   // Fallback pan
-  else self.slides.style.marginLeft = position + '%';
+  else this.slides.style.marginLeft = position + '%';
 };
 
 /**
- * Activates and pans to a slide.
- * @method
+ * Activates a slide and pans the slider to it.
  * @param {string} slideId - HTML ID of the slide to activate.
  */
-Skid.prototype.activateSlide = function(slideId) {
+Skid.Slider.prototype.activateSlide = function(slideId) {
   var self  = this;
   // Update active slide
   self.activeSlide.classList.remove('active');

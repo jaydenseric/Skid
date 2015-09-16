@@ -10,14 +10,14 @@ var hurdler = new Hurdler;
 // Initialize Skid
 ready(function() {
   document.queryAll('.skid').forEach(function(element) {
-    new Skid(element);
+    new Skid.Slider(element);
   });
 });
 
 // Control Skid via URL hashes with Hurdler
 hurdler.addTest(
   function() { return this.parentNode.classList.contains('slides') },
-  function() { this.closest('.skid').skid.activateSlide(this.id) }
+  function() { this.closest('.skid').slider.activateSlide(this.id) }
 );
 
 // Initialize Hurdler

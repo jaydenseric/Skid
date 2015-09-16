@@ -1,10 +1,8 @@
 # ![Skid](http://jaydenseric.com/shared/skid-logo.svg)
 
-Skid is an ultra-lightweight slider written in plain JS.
+Skid is an ultra-lightweight slider written in plain JS. Try the [demo](http://rawgit.com/jaydenseric/Skid/master/demo.html).
 
 It leverages [Hurdler](https://github.com/jaydenseric/Hurdler) for semantic hash link controls and the ability to link to particular slides.
-
-Try the [demo](http://rawgit.com/jaydenseric/Skid/master/demo.html).
 
 ## Dependancies
 
@@ -26,17 +24,17 @@ Be sure to use the [DOM4 polyfill](https://github.com/WebReflection/dom4) or man
 3. Add [*skid.css*](https://github.com/jaydenseric/Skid/blob/master/skid.css).
 4. Follow the example in [*demo.js*](https://github.com/jaydenseric/Skid/blob/master/demo.js) for how to initialize Hurdler and Skid.
 
-### `new Skid(container)`
+### `var slider = new Skid.Slider(element)`
 
-Constructs a new Skid instance.
+Constructs a new Skid Slider instance.
 
 Parameter | Type | Description
 --- | --- | ---
-container | HTMLElement | The element containing all components.
+element | HTMLElement | The element containing all components.
 
-### `skid.activateSlide(slideId)`
+### `slider.activateSlide(slideId)`
 
-Activates and pans to a slide.
+Activates a slide and pans the slider to it.
 
 Parameter | Type | Description
 --- | --- | ---
