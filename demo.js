@@ -4,9 +4,6 @@ function ready(callback) {
   else document.addEventListener('DOMContentLoaded', callback);
 }
 
-// Construct a new Hurdler instance
-var hurdler = new Hurdler;
-
 // Initialize Skid
 ready(function() {
   document.queryAll('.skid').forEach(function(element) {
@@ -15,10 +12,10 @@ ready(function() {
 });
 
 // Control Skid via URL hashes with Hurdler
-hurdler.addTest(
-  function() { return this.parentNode.classList.contains('slides') },
-  function() { this.closest('.skid').slider.activateSlide(this.id) }
-);
+Hurdler.tests.push({
+  test     : function() { return this.parentNode.classList.contains('slides') },
+  callback : function() { this.closest('.skid').slider.activateSlide(this.id) }
+});
 
-// Initialize Hurdler
-ready(function() { hurdler.run() });
+// Run Hurdler
+ready(function() { Hurdler.run() });
