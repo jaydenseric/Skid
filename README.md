@@ -1,6 +1,6 @@
 # ![Skid](http://jaydenseric.com/shared/skid-logo.svg)
 
-Skid is an ultra-lightweight slider supporting mouse and touch written in plain JS. It leverages [Hurdler](https://github.com/jaydenseric/Hurdler) for semantic hash link controls and the ability to link to particular slides.
+Skid is an ultra-lightweight slider supporting mouse and touch written in plain JS. It leverages [Hurdler](https://github.com/jaydenseric/Hurdler) for URL hash link controls and the ability to link to particular slides.
 
 Try the [demo](http://rawgit.com/jaydenseric/Skid/master/demo.html).
 
