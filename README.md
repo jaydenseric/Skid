@@ -10,7 +10,7 @@ Try the [demo](http://rawgit.com/jaydenseric/Skid/master/demo.html).
 
 ## Browser support
 
-Evergreen browsers for now; IE9 should work but hasn't been tested.
+Evergreen browsers and IE9.
 
 Be sure to use the [DOM4 polyfill](https://github.com/WebReflection/dom4) or manually handle:
 
@@ -22,20 +22,13 @@ Be sure to use the [DOM4 polyfill](https://github.com/WebReflection/dom4) or man
 1. Add [*hurdler.js*](https://github.com/jaydenseric/Hurdler/blob/master/hurdler.js) and [required polyfills](https://github.com/jaydenseric/Hurdler#browser-support).
 2. Add [*skid.js*](https://github.com/jaydenseric/Skid/blob/master/skid.js) and [required polyfills](https://github.com/jaydenseric/Skid#browser-support).
 3. Add [*skid.css*](https://github.com/jaydenseric/Skid/blob/master/skid.css).
-4. Follow the example in [*demo.js*](https://github.com/jaydenseric/Skid/blob/master/demo.js) for how to initialize Hurdler and Skid.
+4. Add slider markup as per [*demo.html*](https://github.com/jaydenseric/Skid/blob/master/demo.html). Make sure there are no spaces or line breaks between slide elements to avoid whitespace issues.
+5. Follow the example in [*demo.js*](https://github.com/jaydenseric/Skid/blob/master/demo.js) for how to initialize Hurdler and Skid.
 
-### `var slider = new Skid.Slider(element)`
+### Constructor
 
-Constructs a new Skid Slider instance.
+`var slider = new Skid.Slider(element)` constructs a new Skid Slider instance, with `element` being that which contains all components.
 
-Parameter | Type | Description
---- | --- | ---
-element | HTMLElement | The element containing all components.
+### Activate slide
 
-### `slider.activateSlide(slideId)`
-
-Activates a slide and pans the slider to it.
-
-Parameter | Type | Description
---- | --- | ---
-slideId | string | HTML ID of the slide to activate.
+Use `slider.activateSlide(id)` to activate and pan to a slide, with `id` being the element ID of the slide to activate.

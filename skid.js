@@ -2,7 +2,7 @@
  * A slider utilizing Hurdler for URL hash based control.
  * @namespace Skid
  * @see https://github.com/jaydenseric/Skid
- * @version 1.0.0
+ * @version 1.1.0
  * @author Jayden Seric
  * @license MIT
  */
@@ -84,16 +84,16 @@ Skid.Slider = function(element) {
           // If any distance was dragged, update active slide
           if (x != originalX) {
             // Flick gesture must be at least 80px long
-            if (flick && Math.abs(originalX - x) > 80) hurdler.setHash(originalX < x ? self.priorSlide.id : self.nextSlide.id);
+            if (flick && Math.abs(originalX - x) > 80) Hurdler.setHash(originalX < x ? self.priorSlide.id : self.nextSlide.id);
             else {
               // Determine the closest slide to activate and pan to
               var closestSlideIndex = Math.round(pan / -100);
               if (closestSlideIndex < 0) closestSlideIndex = 0;
               if (closestSlideIndex > self.slideCount - 1) closestSlideIndex = self.slideCount - 1;
               var closestSlideId = self.slides.children[closestSlideIndex].id;
-              // Only update URL hash if slide is new
-              if (self.activeSlide == closestSlideIndex) self.activateSlide(closestSlideId);
-              else hurdler.setHash(closestSlideId);
+              // Only update URL hash if slide is not already active
+              if (closestSlideId == Hurdler.getTargetId()) self.activateSlide(closestSlideId);
+              else Hurdler.setHash(closestSlideId);
             }
           }
         });
@@ -118,26 +118,26 @@ Skid.Slider.prototype.pan = function(position) {
 
 /**
  * Activates a slide and pans the slider to it.
- * @param {string} slideId - HTML ID of the slide to activate.
+ * @param {string} id - Element ID of the slide to activate.
  */
-Skid.Slider.prototype.activateSlide = function(slideId) {
+Skid.Slider.prototype.activateSlide = function(id) {
   var self  = this;
   // Update active slide
   self.activeSlide.classList.remove('active');
-  self.activeSlide = document.getElementById(slideId);
+  self.activeSlide = document.getElementById(id);
   self.activeSlideIndex = Array.prototype.slice.call(self.slides.children).indexOf(self.activeSlide);
   self.activeSlide.classList.add('active');
   // Pan slider to active slide
   self.pan(self.activeSlideIndex * -100);
   // Update prior slide and link
   self.priorSlide = self.activeSlide.previousElementSibling || self.slides.lastElementChild;
-  if (self.priorLink) self.priorLink.href = '#' + self.priorSlide.id;
+  if (self.priorLink) self.priorLink.href = '#' + Hurdler.hashPrefix + self.priorSlide.id;
   // Update next slide and link
   self.nextSlide = self.activeSlide.nextElementSibling || self.slides.firstElementChild;
-  if (self.nextLink) self.nextLink.href = '#' + self.nextSlide.id;
+  if (self.nextLink) self.nextLink.href = '#' + Hurdler.hashPrefix + self.nextSlide.id;
   // Update tabs
   if (self.tabs) {
     self.tabs.query('.active').classList.remove('active');
-    self.tabs.query('[href^="#' + slideId + '"]').classList.add('active');
+    self.tabs.query('[href^="#' + Hurdler.hashPrefix + id + '"]').classList.add('active');
   }
 };
