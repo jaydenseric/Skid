@@ -1,8 +1,6 @@
 .skid {
-  overflow: hidden;
   width: 100%;
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
+  overflow: hidden;
 }
 
 .skid > .slides {
@@ -10,6 +8,8 @@
   margin: 0;
   padding: 0;
   white-space: nowrap;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
   cursor: -webkit-grab;
   cursor: grab;
   transition: 1s;

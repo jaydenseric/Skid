@@ -1,12 +1,12 @@
 .skid {
-  overflow: hidden;
   width: 100%;
-  backface-visibility: hidden; // Improve browser rendering bugs
+  overflow: hidden;
   > .slides {
     width: 100%;
     margin: 0;
     padding: 0;
     white-space: nowrap;
+    backface-visibility: hidden; // Fix browser rendering bugs
     cursor: grab;
     transition: 1s;
     > li {

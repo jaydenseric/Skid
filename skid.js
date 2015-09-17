@@ -2,7 +2,7 @@
  * A slider utilizing Hurdler for URL hash based control.
  * @namespace Skid
  * @see https://github.com/jaydenseric/Skid
- * @version 1.1.1
+ * @version 1.1.2
  * @author Jayden Seric
  * @license MIT
  */
