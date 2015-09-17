@@ -16,6 +16,8 @@ Be sure to use the [DOM4 polyfill](https://github.com/WebReflection/dom4) or man
 
 - [Elements.query](https://dom.spec.whatwg.org/#dom-elements-query)
 - [Element.classList](https://dom.spec.whatwg.org/#dom-element-classlist)
+- [Window.requestAnimationFrame](https://html.spec.whatwg.org/multipage/webappapis.html#dom-window-requestanimationframe)
+- [Window.cancelAnimationFrame](https://html.spec.whatwg.org/multipage/webappapis.html#dom-window-cancelanimationframe)
 
 ## Usage
 

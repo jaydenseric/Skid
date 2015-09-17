@@ -2,7 +2,7 @@
  * A slider utilizing Hurdler for URL hash based control.
  * @namespace Skid
  * @see https://github.com/jaydenseric/Skid
- * @version 1.1.0
+ * @version 1.1.1
  * @author Jayden Seric
  * @license MIT
  */
@@ -66,20 +66,25 @@ Skid.Slider = function(element) {
         }, 250);
         // Begin panning
         self.element.classList.add('panning');
-        var offset      = self.slides.getBoundingClientRect().left + document.body.scrollLeft,
-            width       = self.slides.offsetWidth,
-            originalX   = x = Skid.normalizeEventX(event) - offset,
-            originalPan = pan = self.activeSlideIndex * -100;
-        function drag(event) {
-          x   = Skid.normalizeEventX(event) - offset;
-          pan = originalPan + (x - originalX) / width * 100;
-          self.pan(pan);
+        var offset       = self.slides.getBoundingClientRect().left + document.body.scrollLeft,
+            width        = self.slides.offsetWidth,
+            originalX    = x = Skid.normalizeEventX(event) - offset,
+            originalPan  = panPosition = self.activeSlideIndex * -100,
+            scheduledPan = false;
+        function pan(event) {
+          if (!scheduledPan) scheduledPan = requestAnimationFrame(function() {
+            x           = Skid.normalizeEventX(event) - offset;
+            panPosition = originalPan + (x - originalX) / width * 100;
+            self.pan(panPosition);
+            scheduledPan = false;
+          });
         }
-        document.addEventListener(panEventName, drag);
+        document.addEventListener(panEventName, pan);
         document.addEventListener(endEventName, function end(event) {
           // End panning
           document.removeEventListener(endEventName, end);
-          document.removeEventListener(panEventName, drag);
+          document.removeEventListener(panEventName, pan);
+          window.cancelAnimationFrame(scheduledPan);
           self.element.classList.remove('panning');
           // If any distance was dragged, update active slide
           if (x != originalX) {
@@ -87,7 +92,7 @@ Skid.Slider = function(element) {
             if (flick && Math.abs(originalX - x) > 80) Hurdler.setHash(originalX < x ? self.priorSlide.id : self.nextSlide.id);
             else {
               // Determine the closest slide to activate and pan to
-              var closestSlideIndex = Math.round(pan / -100);
+              var closestSlideIndex = Math.round(panPosition / -100);
               if (closestSlideIndex < 0) closestSlideIndex = 0;
               if (closestSlideIndex > self.slideCount - 1) closestSlideIndex = self.slideCount - 1;
               var closestSlideId = self.slides.children[closestSlideIndex].id;
