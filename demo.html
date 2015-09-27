@@ -6,9 +6,84 @@
     <title>Skid demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="skid.css" />
-    <link rel="stylesheet" href="demo.css" />
+    <style>
+      body {
+        padding: 1em;
+        text-align: center;
+        font: 20px sans-serif;
+        color: #404040;
+      }
+      .skid {
+        max-width: 40em;
+        margin: 0 auto;
+      }
+      .slides li {
+        box-sizing: border-box;
+        padding: 10vmin 1em;
+        color: rgba(255, 255, 255, .9);
+      }
+      .slides li:nth-child(1) {
+        background-color: #355dea;
+      }
+      .slides li:nth-child(2) {
+        background-color: #d323b6;
+      }
+      .slides li:nth-child(3) {
+        background-color: #7c40d2;
+      }
+      h2 {
+        margin: 0;
+        font-size: 10vmin;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+        margin-top: 1em;
+        vertical-align: middle;
+      }
+      nav {
+        padding: 1em;
+      }
+      nav * {
+        display: inline-block;
+      }
+      nav ol {
+        margin: 0;
+        padding: 0;
+      }
+      nav a {
+        padding: .2em .3em;
+      }
+      nav .active {
+        background-color: rgba(0, 0, 0, .15);
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom4/1.4.8/dom4.js"></script>
+    <script src="https://cdn.rawgit.com/jaydenseric/Hurdler/v1.2.0/hurdler.js"></script>
+    <script src="skid.js"></script>
+    <script>
+      // Runs callback when document is ready
+      function ready(callback) {
+        if (document.readyState != 'loading') callback();
+        else document.addEventListener('DOMContentLoaded', callback);
+      }
+      // Initialize Skid
+      ready(function() {
+        document.queryAll('.skid').forEach(function(element) {
+          new Skid.Slider(element);
+        });
+      });
+      // Control Skid via URL hashes with Hurdler
+      Hurdler.tests.push({
+        test     : function() { return this.parentNode.classList.contains('slides') },
+        callback : function() { this.closest('.skid').slider.activateSlide(this.id) }
+      });
+      // Run Hurdler
+      ready(function() { Hurdler.run() });
+    </script>
   </head>
   <body>
+    <a href="https://github.com/jaydenseric/Skid"><img src="skid-logo.svg" alt="Skid logo" /></a>
     <section class="skid">
       <ol class="slides">
         <li class="active" id="first">
@@ -32,9 +107,5 @@
         <a href="#/second" class="next">Next</a>
       </nav>
     </section>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom4/1.4.8/dom4.js"></script>
-    <script src="hurdler.js"></script>
-    <script src="skid.js"></script>
-    <script src="demo.js"></script>
   </body>
 </html>
