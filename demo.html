@@ -60,7 +60,7 @@
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dom4/1.4.8/dom4.js"></script>
-    <script src="https://cdn.rawgit.com/jaydenseric/Hurdler/v1.2.0/hurdler.js"></script>
+    <script src="https://cdn.rawgit.com/jaydenseric/Hurdler/v2.0.0/hurdler.js"></script>
     <script src="skid.js"></script>
     <script>
       // Runs callback when document is ready
@@ -75,7 +75,7 @@
         });
       });
       // Control Skid via URL hashes with Hurdler
-      Hurdler.tests.push({
+      Hurdler.hurdles.push({
         test     : function() { return this.parentNode.classList.contains('slides') },
         callback : function() { this.closest('.skid').slider.activateSlide(this.id) }
       });
