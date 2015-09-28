@@ -25,7 +25,7 @@ Be sure to use the [DOM4 polyfill](https://github.com/WebReflection/dom4) or man
 2. Add [*skid.js*](https://github.com/jaydenseric/Skid/blob/master/skid.js) and [required polyfills](https://github.com/jaydenseric/Skid#browser-support).
 3. Add [*skid.css*](https://github.com/jaydenseric/Skid/blob/master/skid.css).
 4. Add slider markup as per [*demo.html*](https://github.com/jaydenseric/Skid/blob/master/demo.html). Make sure there are no spaces or line breaks between slide elements to avoid whitespace issues.
-5. Follow the example in [*demo.js*](https://github.com/jaydenseric/Skid/blob/master/demo.js) for how to initialize Hurdler and Skid.
+5. Follow the example JS in [*demo.html*](https://github.com/jaydenseric/Skid/blob/master/demo.html) for how to initialize Hurdler and Skid.
 
 ### Constructor
 
