@@ -13,74 +13,97 @@
         font: 20px sans-serif;
         color: #404040;
       }
-      .skid {
-        max-width: 9em;
-        margin: 0 auto;
-        font-size: 10vmin;
-      }
-      .slides li {
-        box-sizing: border-box;
-        padding: 1em;
-        color: rgba(255, 255, 255, .9);
-      }
-      .slides li:nth-child(1) {
-        background-color: #355dea;
-      }
-      .slides li:nth-child(2) {
-        background-color: #d323b6;
-      }
-      .slides li:nth-child(3) {
-        background-color: #7c40d2;
-      }
-      h2 {
-        margin: 0 0 .4em 0;
-        font-size: inherit;
-      }
       img {
         max-width: 100%;
         height: auto;
         vertical-align: middle;
       }
-      nav {
+      h2 {
+        margin: 0 0 .4em 0;
+        font-size: inherit;
+      }
+      .skid {
+        max-width: 9em;
+        margin: 0 auto;
+        font-size: 10vmin;
+      }
+      .skid > .slides > li {
+        box-sizing: border-box;
+        padding: 1em;
+        color: rgba(255, 255, 255, .9);
+      }
+      .skid > .slides > :nth-child(1) {
+        background-color: #355dea;
+      }
+      .skid > .slides > :nth-child(2) {
+        background-color: #d323b6;
+      }
+      .skid > .slides > :nth-child(3) {
+        background-color: #7c40d2;
+      }
+      .skid > nav {
         padding: 1em;
         font-size: 20px;
       }
-      nav * {
+      .skid > nav * {
         display: inline-block;
       }
-      nav ol {
+      .skid > nav ol {
         margin: 0;
         padding: 0;
       }
-      nav a {
+      .skid > nav a {
         padding: .2em .3em;
       }
-      nav .active {
+      .skid > nav .active {
         background-color: rgba(0, 0, 0, .15);
+      }
+      #log {
+        margin-top: 1em;
+      }
+      #log ol {
+        display: inline-block;
+        text-align: left;
+        font-size: 14px;
+      }
+      #log li {
+        padding: 1px 0;
+      }
+      code {
+        display: inline-block;
+        padding: .3em .5em .4em;
+        background-color: #404040;
+        color: white;
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dom4/1.4.8/dom4.js"></script>
     <script src="https://cdn.rawgit.com/jaydenseric/Hurdler/v2.0.0/hurdler.js"></script>
     <script src="skid.js"></script>
     <script>
-      // Runs callback when document is ready
-      function ready(callback) {
-        if (document.readyState != 'loading') callback();
-        else document.addEventListener('DOMContentLoaded', callback);
-      }
-      // Initialize Skid
-      ready(function() {
-        document.queryAll('.skid').forEach(function(element) {
-          new Skid.Slider(element);
+      // Wait for DOM ready
+      document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Skid slider
+        var slider = new Skid.Slider({
+          element: document.query('.skid')
         });
+        // Logs events
+        var log = document.query('#log ol');
+        function logEvent(event, message) {
+          log.innerHTML += '<li><code>' + event.type + '</code> ' + message + '.</li>';
+        }
+        // Log slide events
+        Array.prototype.forEach.call(slider.slides.children, function(element, i) {
+          element.addEventListener('active', function(event) {
+            logEvent(event, 'on slide ' + (i + 1));
+          });
+        });
+        // Log slider events
+        slider.element.addEventListener('activated', function(event) {
+          logEvent(event, 'on slider');
+        });
+        // Run Hurdler
+        Hurdler.run();
       });
-      // Control Skid via URL hashes with Hurdler
-      Hurdler.hurdles.push({
-        test     : function() { return this.parentNode.classList.contains('slides') },
-        callback : function() { this.closest('.skid').slider.activateSlide(this.id) }
-      });
-      // Run Hurdler
-      ready(function() { Hurdler.run() });
     </script>
   </head>
   <body>
@@ -108,5 +131,9 @@
         <a href="#/second" class="next">Next</a>
       </nav>
     </section>
+    <aside id="log">
+      <h2>Events</h2>
+      <ol></ol>
+    </aside>
   </body>
 </html>

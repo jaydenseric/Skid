@@ -2,9 +2,11 @@
  * A slider utilizing Hurdler for URL hash based control.
  * @namespace Skid
  * @see https://github.com/jaydenseric/Skid
- * @version 1.1.2
+ * @version 2.0.0
  * @author Jayden Seric
  * @license MIT
+ * @requires Hurdler
+ * @see https://github.com/jaydenseric/Hurdler
  */
 var Skid = Skid || {};
 
@@ -35,20 +37,25 @@ Skid.normalizeEventX = function(event) {
 
 /**
  * Constructs a new Skid slider instance.
- * @param {HTMLElement} element - The element containing all components.
+ * @param {Object} options - Initialization options.
+ * @param {HTMLElement} options.element - Container.
+ * @param {HTMLElement} [options.slides] - Slides container.
+ * @param {(HTMLElement|boolean)} [options.priorLink] - Prior slide link, or false.
+ * @param {(HTMLElement|boolean)} [options.nextLink] - Next slide link, or false.
+ * @param {(HTMLElement|boolean)} [options.tabs] - Tab links container, or false.
  */
-Skid.Slider = function(element) {
-  var self = element.slider = this;
-  self.element          = element;
-  self.slides           = self.element.query('> .slides');
+Skid.Slider = function(options) {
+  var self = options.element.slider = this;
+  self.element          = options.element;
+  self.slides           = options.slides || self.element.query('> .slides');
   self.slideCount       = self.slides.children.length;
   self.activeSlideIndex = 0;
   self.activeSlide      = self.slides.firstElementChild;
   self.priorSlide       = self.slides.lastElementChild;
-  self.priorLink        = self.element.query('> nav .prior');
-  self.nextSlide        = self.slides.firstElementChild;
-  self.nextLink         = self.element.query('> nav .next');
-  self.tabs             = self.element.query('> nav ol');
+  self.priorLink        = options.priorLink || self.element.query('> nav .prior');
+  self.nextSlide        = self.activeSlide.nextElementSibling || self.slides.firstElementChild;
+  self.nextLink         = options.nextLink || self.element.query('> nav .next');
+  self.tabs             = options.tabs || self.element.query('> nav ol');
   // Prevent dragging images from disrupting dragging slides
   self.element.queryAll('img').forEach(function(image) {
     image.addEventListener('dragstart', function(event) { event.preventDefault() });
@@ -88,18 +95,20 @@ Skid.Slider = function(element) {
           self.element.classList.remove('panning');
           // If any distance was dragged, update active slide
           if (x != originalX) {
-            // Flick gesture must be at least 80px long
-            if (flick && Math.abs(originalX - x) > 80) Hurdler.setHash(originalX < x ? self.priorSlide.id : self.nextSlide.id);
-            else {
-              // Determine the closest slide to activate and pan to
-              var closestSlideIndex = Math.round(panPosition / -100);
-              if (closestSlideIndex < 0) closestSlideIndex = 0;
-              if (closestSlideIndex > self.slideCount - 1) closestSlideIndex = self.slideCount - 1;
-              var closestSlideId = self.slides.children[closestSlideIndex].id;
-              // Only update URL hash if slide is not already active
-              if (closestSlideId == Hurdler.getTargetId()) self.activateSlide(closestSlideId);
-              else Hurdler.setHash(closestSlideId);
+            // Determine the closest slide
+            var closestSlideIndex = Math.round(panPosition / -100);
+            // Handle horizontal flick gesture
+            if (flick && Math.abs(originalX - x) > 80 && closestSlideIndex == self.activeSlideIndex) {
+              // Gesture has the right timing, length and is useful
+              closestSlideIndex += originalX < x ? -1 : 1;
             }
+            // No slides beyond first or last
+            if (closestSlideIndex < 0) closestSlideIndex = 0;
+            if (closestSlideIndex > self.slideCount - 1) closestSlideIndex = self.slideCount - 1;
+            var closestSlideId = self.slides.children[closestSlideIndex].id;
+            // Only update URL hash if slide is not already active
+            if (closestSlideId == Hurdler.getTargetId()) self.activateSlide(closestSlideId);
+            else Hurdler.setHash(closestSlideId);
           }
         });
       });
@@ -108,6 +117,11 @@ Skid.Slider = function(element) {
   // Enable mouse and touch interaction
   enable('mousedown', 'mousemove', 'mouseup');
   enable('touchstart', 'touchmove', 'touchend');
+  // Enable URL hash control via Hurdler
+  Hurdler.hurdles.push({
+    test     : function() { return this.parentNode === self.slides },
+    callback : function() { self.activateSlide(this) }
+  });
 };
 
 /**
@@ -123,26 +137,35 @@ Skid.Slider.prototype.pan = function(position) {
 
 /**
  * Activates a slide and pans the slider to it.
- * @param {string} id - Element ID of the slide to activate.
+ * @param {(HTMLElement|string)} slide - Element or ID of the slide to activate.
  */
-Skid.Slider.prototype.activateSlide = function(id) {
-  var self  = this;
-  // Update active slide
-  self.activeSlide.classList.remove('active');
-  self.activeSlide = document.getElementById(id);
-  self.activeSlideIndex = Array.prototype.slice.call(self.slides.children).indexOf(self.activeSlide);
-  self.activeSlide.classList.add('active');
+Skid.Slider.prototype.activateSlide = function(slide) {
+  var self = this;
+  if (typeof slide === 'string') slide = document.getElementById(slide);
+  // Prevent reactivation
+  if (self.activeSlide !== slide) {
+    // Update active slide
+    self.activeSlide.classList.remove('active');
+    self.activeSlide = slide;
+    self.activeSlideIndex = Array.prototype.slice.call(self.slides.children).indexOf(self.activeSlide);
+    self.activeSlide.classList.add('active');
+    // Update prior slide and link
+    self.priorSlide = self.activeSlide.previousElementSibling || self.slides.lastElementChild;
+    if (self.priorLink) self.priorLink.href = '#' + Hurdler.hashPrefix + self.priorSlide.id;
+    // Update next slide and link
+    self.nextSlide = self.activeSlide.nextElementSibling || self.slides.firstElementChild;
+    if (self.nextLink) self.nextLink.href = '#' + Hurdler.hashPrefix + self.nextSlide.id;
+    // Update tabs
+    if (self.tabs) {
+      self.tabs.query('.active').classList.remove('active');
+      self.tabs.query('[href^="#' + Hurdler.hashPrefix + self.activeSlide.id + '"]').classList.add('active');
+    }
+    // Fire events
+    var slideEvent = new CustomEvent('active');
+    self.activeSlide.dispatchEvent(slideEvent);
+    var sliderEvent = new CustomEvent('activated');
+    self.element.dispatchEvent(sliderEvent);
+  }
   // Pan slider to active slide
   self.pan(self.activeSlideIndex * -100);
-  // Update prior slide and link
-  self.priorSlide = self.activeSlide.previousElementSibling || self.slides.lastElementChild;
-  if (self.priorLink) self.priorLink.href = '#' + Hurdler.hashPrefix + self.priorSlide.id;
-  // Update next slide and link
-  self.nextSlide = self.activeSlide.nextElementSibling || self.slides.firstElementChild;
-  if (self.nextLink) self.nextLink.href = '#' + Hurdler.hashPrefix + self.nextSlide.id;
-  // Update tabs
-  if (self.tabs) {
-    self.tabs.query('.active').classList.remove('active');
-    self.tabs.query('[href^="#' + Hurdler.hashPrefix + id + '"]').classList.add('active');
-  }
 };
