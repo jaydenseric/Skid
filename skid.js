@@ -1,12 +1,12 @@
 /**
  * A slider utilizing Hurdler for URL hash based control.
  * @namespace Skid
- * @see https://github.com/jaydenseric/Skid
- * @version 2.0.0
- * @author Jayden Seric
- * @license MIT
- * @requires Hurdler
- * @see https://github.com/jaydenseric/Hurdler
+ * @see       https://github.com/jaydenseric/Skid
+ * @version   2.0.0
+ * @author    Jayden Seric
+ * @license   MIT
+ * @requires  Hurdler
+ * @see       https://github.com/jaydenseric/Hurdler
  */
 var Skid = Skid || {};
 
@@ -28,7 +28,7 @@ Skid.transform = (function() {
 
 /**
  * Returns a normalized mouse or touch event X coordinate.
- * @param {object} event - Event object.
+ * @param   {object} event - Event object.
  * @returns {number} The event X coordinate.
  */
 Skid.normalizeEventX = function(event) {
@@ -37,25 +37,26 @@ Skid.normalizeEventX = function(event) {
 
 /**
  * Constructs a new Skid slider instance.
- * @param {Object} options - Initialization options.
- * @param {HTMLElement} options.element - Container.
- * @param {HTMLElement} [options.slides] - Slides container.
+ * @param {Object}                options             - Initialization options.
+ * @param {HTMLElement}           options.element     - Container.
+ * @param {HTMLElement}           [options.slides]    - Slides container.
  * @param {(HTMLElement|boolean)} [options.priorLink] - Prior slide link, or false.
- * @param {(HTMLElement|boolean)} [options.nextLink] - Next slide link, or false.
- * @param {(HTMLElement|boolean)} [options.tabs] - Tab links container, or false.
+ * @param {(HTMLElement|boolean)} [options.nextLink]  - Next slide link, or false.
+ * @param {(HTMLElement|boolean)} [options.tabs]      - Tab links container, or false.
  */
 Skid.Slider = function(options) {
   var self = options.element.slider = this;
   self.element          = options.element;
-  self.slides           = options.slides || self.element.query('> .slides');
+  self.slides           = options.slides    || self.element.query('> .slides');
+  self.priorLink        = options.priorLink || self.element.query('> nav .prior');
+  self.nextLink         = options.nextLink  || self.element.query('> nav .next');
+  self.tabs             = options.tabs      || self.element.query('> nav ol');
+  self.priorSlide       = self.slides.lastElementChild;
+  self.activeSlide      = self.slides.firstElementChild;
+  self.nextSlide        = self.activeSlide.nextElementSibling || self.slides.firstElementChild;
   self.slideCount       = self.slides.children.length;
   self.activeSlideIndex = 0;
-  self.activeSlide      = self.slides.firstElementChild;
-  self.priorSlide       = self.slides.lastElementChild;
-  self.priorLink        = options.priorLink || self.element.query('> nav .prior');
-  self.nextSlide        = self.activeSlide.nextElementSibling || self.slides.firstElementChild;
-  self.nextLink         = options.nextLink || self.element.query('> nav .next');
-  self.tabs             = options.tabs || self.element.query('> nav ol');
+
   // Prevent dragging images from disrupting dragging slides
   self.element.queryAll('img').forEach(function(image) {
     image.addEventListener('dragstart', function(event) { event.preventDefault() });
