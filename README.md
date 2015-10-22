@@ -32,15 +32,23 @@ Be sure to use the [DOM4 polyfill](https://github.com/WebReflection/dom4) or man
 
 ### Constructor
 
-`new Skid.Slider(options)` constructs a new Skid Slider instance.
+```js
+new Skid.Slider({
+  element: document.query('.skid')
+});
+```
 
-Parameter           | Type                       | Default        | Description
---------------------|----------------------------|----------------|--------------------------------
-`options.element`   | HTMLElement                |                | Container.
-`options.slides`    | HTMLElement                | `> .slides`    | Slides container.
-`options.priorLink` | HTMLElement &#124; boolean | `> nav .prior` | Prior slide link or `false`.
-`options.nextLink`  | HTMLElement &#124; boolean | `> nav .next`  | Next slide link or `false`.
-`options.tabs`      | HTMLElement &#124; boolean | `> nav ol`     | Tab links container or `false`.
+Here are the available options:
+
+Option          | Type                       | Description                                    | Default
+----------------|----------------------------|------------------------------------------------|---------------
+`element`       | HTMLElement                | Container.                                     |
+`slides`        | HTMLElement                | Slides container.                              | `> .slides`
+`priorLink`     | HTMLElement &#124; boolean | Prior slide link or `false`.                   | `> nav .prior`
+`nextLink`      | HTMLElement &#124; boolean | Next slide link or `false`.                    | `> nav .next`
+`tabs`          | HTMLElement &#124; boolean | Tab links container or `false`.                | `> nav ol`
+`dragClass`     | string                     | Container class name to enable drag and flick. | `drag`
+`draggingClass` | string                     | Container class name for dragging state.       | `dragging`
 
 ### Activate slide
 

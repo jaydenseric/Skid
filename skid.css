@@ -10,8 +10,6 @@
   white-space: nowrap;
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
-  cursor: -webkit-grab;
-  cursor: grab;
   transition: 1s;
 }
 
@@ -22,18 +20,23 @@
   white-space: normal;
 }
 
-.skid > .slides img {
+.skid.drag > .slides {
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.skid.drag > .slides img {
   -webkit-user-drag: none;
 }
 
-.skid.panning {
+.skid.dragging {
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
 }
 
-.skid.panning > .slides {
+.skid.dragging > .slides {
   cursor: -webkit-grabbing;
   cursor: grabbing;
   transition: none;

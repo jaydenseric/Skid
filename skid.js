@@ -2,7 +2,7 @@
  * A slider utilizing Hurdler for URL hash based control.
  * @namespace Skid
  * @see       https://github.com/jaydenseric/Skid
- * @version   2.0.0
+ * @version   2.1.0
  * @author    Jayden Seric
  * @license   MIT
  * @requires  Hurdler
@@ -11,7 +11,7 @@
 var Skid = Skid || {};
 
 /**
- * @property {(string|boolean)} transform - The CSS transform property for the slider to use, or false indicating no CSS 3D support.
+ * @property {string|boolean} transform - The CSS transform property for the slider to use, or false indicating no CSS 3D support.
  */
 Skid.transform = (function() {
   var props = {
@@ -37,31 +37,31 @@ Skid.normalizeEventX = function(event) {
 
 /**
  * Constructs a new Skid slider instance.
- * @param {Object}                options             - Initialization options.
- * @param {HTMLElement}           options.element     - Container.
- * @param {HTMLElement}           [options.slides]    - Slides container.
- * @param {(HTMLElement|boolean)} [options.priorLink] - Prior slide link, or false.
- * @param {(HTMLElement|boolean)} [options.nextLink]  - Next slide link, or false.
- * @param {(HTMLElement|boolean)} [options.tabs]      - Tab links container, or false.
+ * @param {Object}              options                 - Initialization options.
+ * @param {HTMLElement}         options.element         - Container.
+ * @param {HTMLElement}         [options.slides]        - Slides container.
+ * @param {HTMLElement|boolean} [options.priorLink]     - Prior slide link, or false.
+ * @param {HTMLElement|boolean} [options.nextLink]      - Next slide link, or false.
+ * @param {HTMLElement|boolean} [options.tabs]          - Tab links container, or false.
+ * @param {string}              [options.dragClass]     - Container class name to enable drag and flick.
+ * @param {string}              [options.draggingClass] - Container class name for dragging state.
  */
 Skid.Slider = function(options) {
   var self = options.element.slider = this;
   self.element          = options.element;
-  self.slides           = options.slides    || self.element.query('> .slides');
-  self.priorLink        = options.priorLink || self.element.query('> nav .prior');
-  self.nextLink         = options.nextLink  || self.element.query('> nav .next');
-  self.tabs             = options.tabs      || self.element.query('> nav ol');
+  self.slides           = options.slides        || self.element.query('> .slides');
+  self.priorLink        = options.priorLink     || self.element.query('> nav .prior');
+  self.nextLink         = options.nextLink      || self.element.query('> nav .next');
+  self.tabs             = options.tabs          || self.element.query('> nav ol');
+  self.dragClass        = options.dragClass     || 'drag';
+  self.draggingClass    = options.draggingClass || 'dragging';
+  self.drag             = self.element.classList.contains(self.dragClass);
   self.priorSlide       = self.slides.lastElementChild;
   self.activeSlide      = self.slides.firstElementChild;
   self.nextSlide        = self.activeSlide.nextElementSibling || self.slides.firstElementChild;
   self.slideCount       = self.slides.children.length;
   self.activeSlideIndex = 0;
-
-  // Prevent dragging images from disrupting dragging slides
-  self.element.queryAll('img').forEach(function(image) {
-    image.addEventListener('dragstart', function(event) { event.preventDefault() });
-  });
-  // Enables interactions
+  // Enables drag and flick interactions
   function enable(startEventName, panEventName, endEventName) {
     Array.prototype.forEach.call(self.slides.children, function(slide) {
       slide.addEventListener(startEventName, function(event) {
@@ -72,8 +72,8 @@ Skid.Slider = function(options) {
         setTimeout(function() {
           flick = false;
         }, 250);
-        // Begin panning
-        self.element.classList.add('panning');
+        // Begin dragging
+        self.element.classList.add(self.draggingClass);
         var offset       = self.slides.getBoundingClientRect().left + document.body.scrollLeft,
             width        = self.slides.offsetWidth,
             originalX    = x = Skid.normalizeEventX(event) - offset,
@@ -89,11 +89,11 @@ Skid.Slider = function(options) {
         }
         document.addEventListener(panEventName, pan);
         document.addEventListener(endEventName, function end(event) {
-          // End panning
+          // End dragging
           document.removeEventListener(endEventName, end);
           document.removeEventListener(panEventName, pan);
           window.cancelAnimationFrame(scheduledPan);
-          self.element.classList.remove('panning');
+          self.element.classList.remove(self.draggingClass);
           // If any distance was dragged, update active slide
           if (x != originalX) {
             // Determine the closest slide
@@ -115,9 +115,16 @@ Skid.Slider = function(options) {
       });
     });
   }
-  // Enable mouse and touch interaction
-  enable('mousedown', 'mousemove', 'mouseup');
-  enable('touchstart', 'touchmove', 'touchend');
+  // Check if drag enabled
+  if (self.drag) {
+    // Prevent dragging images from disrupting dragging slides
+    self.element.queryAll('img').forEach(function(image) {
+      image.addEventListener('dragstart', function(event) { event.preventDefault() });
+    });
+    // Enable mouse and touch drag and flick interactions
+    enable('mousedown', 'mousemove', 'mouseup');
+    enable('touchstart', 'touchmove', 'touchend');
+  }
   // Enable URL hash control via Hurdler
   Hurdler.hurdles.push({
     test     : function() { return this.parentNode === self.slides },
@@ -138,7 +145,7 @@ Skid.Slider.prototype.pan = function(position) {
 
 /**
  * Activates a slide and pans the slider to it.
- * @param {(HTMLElement|string)} slide - Element or ID of the slide to activate.
+ * @param {HTMLElement|string} slide - Element or ID of the slide to activate.
  */
 Skid.Slider.prototype.activateSlide = function(slide) {
   var self = this;

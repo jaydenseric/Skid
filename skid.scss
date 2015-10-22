@@ -7,7 +7,6 @@
     padding: 0;
     white-space: nowrap;
     backface-visibility: hidden; // Fix browser rendering bugs
-    cursor: grab;
     transition: 1s;
     > li {
       display: inline-block;
@@ -15,11 +14,16 @@
       vertical-align: top;
       white-space: normal;
     }
-    img {
-      -webkit-user-drag: none;
+  }
+  &.drag {
+    > .slides {
+      cursor: grab;
+      img {
+        -webkit-user-drag: none;
+      }
     }
   }
-  &.panning {
+  &.dragging {
     user-select: none;
     > .slides {
       cursor: grabbing;
