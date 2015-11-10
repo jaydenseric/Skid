@@ -2,7 +2,7 @@
  * A slider utilizing Hurdler for URL hash based control.
  * @namespace Skid
  * @see       https://github.com/jaydenseric/Skid
- * @version   2.1.0
+ * @version   2.2.0
  * @author    Jayden Seric
  * @license   MIT
  * @requires  Hurdler
@@ -48,6 +48,7 @@ Skid.normalizeEventX = function(event) {
  */
 Skid.Slider = function(options) {
   var self = options.element.slider = this;
+  // Options
   self.element          = options.element;
   self.slides           = options.slides        || self.element.query('> .slides');
   self.priorLink        = options.priorLink     || self.element.query('> nav .prior');
@@ -55,12 +56,15 @@ Skid.Slider = function(options) {
   self.tabs             = options.tabs          || self.element.query('> nav ol');
   self.dragClass        = options.dragClass     || 'drag';
   self.draggingClass    = options.draggingClass || 'dragging';
+  // Derived
   self.drag             = self.element.classList.contains(self.dragClass);
-  self.priorSlide       = self.slides.lastElementChild;
-  self.activeSlide      = self.slides.firstElementChild;
-  self.nextSlide        = self.activeSlide.nextElementSibling || self.slides.firstElementChild;
   self.slideCount       = self.slides.children.length;
-  self.activeSlideIndex = 0;
+  self.activeSlide      = self.slides.query('> .active');
+  self.activeSlideIndex = Array.prototype.indexOf.call(self.slides.children, self.activeSlide);
+  self.priorSlide       = self.getSlideBefore(self.activeSlide);
+  self.nextSlide        = self.getSlideAfter(self.activeSlide);
+  // Pan to initial slide
+  self.panToSlide(self.activeSlideIndex);
   // Enables drag and flick interactions
   function enable(startEventName, panEventName, endEventName) {
     Array.prototype.forEach.call(self.slides.children, function(slide) {
@@ -92,7 +96,7 @@ Skid.Slider = function(options) {
           // End dragging
           document.removeEventListener(endEventName, end);
           document.removeEventListener(panEventName, pan);
-          window.cancelAnimationFrame(scheduledPan);
+          cancelAnimationFrame(scheduledPan);
           self.element.classList.remove(self.draggingClass);
           // If any distance was dragged, update active slide
           if (x != originalX) {
@@ -144,6 +148,32 @@ Skid.Slider.prototype.pan = function(position) {
 };
 
 /**
+ * Pans the slider to a slide.
+ * @param {number} index - Slide element index.
+ */
+Skid.Slider.prototype.panToSlide = function(index) {
+  this.pan(index * -100);
+};
+
+/**
+ * Gets the slide before a slide.
+ * @param   {HTMLElement} slide - Slide after the desired slide.
+ * @returns {HTMLElement} The slide before the input slide.
+ */
+Skid.Slider.prototype.getSlideBefore = function(slide) {
+  return slide.previousElementSibling || this.slides.lastElementChild;
+};
+
+/**
+ * Gets the slide after a slide.
+ * @param   {HTMLElement} slide - Slide before the desired slide.
+ * @returns {HTMLElement} The slide after the input slide.
+ */
+Skid.Slider.prototype.getSlideAfter = function(slide) {
+  return slide.nextElementSibling || this.slides.firstElementChild;
+};
+
+/**
  * Activates a slide and pans the slider to it.
  * @param {HTMLElement|string} slide - Element or ID of the slide to activate.
  */
@@ -158,10 +188,10 @@ Skid.Slider.prototype.activateSlide = function(slide) {
     self.activeSlideIndex = Array.prototype.slice.call(self.slides.children).indexOf(self.activeSlide);
     self.activeSlide.classList.add('active');
     // Update prior slide and link
-    self.priorSlide = self.activeSlide.previousElementSibling || self.slides.lastElementChild;
+    self.priorSlide = self.getSlideBefore(self.activeSlide);
     if (self.priorLink) self.priorLink.href = '#' + Hurdler.hashPrefix + self.priorSlide.id;
     // Update next slide and link
-    self.nextSlide = self.activeSlide.nextElementSibling || self.slides.firstElementChild;
+    self.nextSlide = self.getSlideAfter(self.activeSlide);
     if (self.nextLink) self.nextLink.href = '#' + Hurdler.hashPrefix + self.nextSlide.id;
     // Update tabs
     if (self.tabs) {
@@ -175,5 +205,5 @@ Skid.Slider.prototype.activateSlide = function(slide) {
     self.element.dispatchEvent(sliderEvent);
   }
   // Pan slider to active slide
-  self.pan(self.activeSlideIndex * -100);
+  self.panToSlide(self.activeSlideIndex);
 };
