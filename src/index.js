@@ -1,6 +1,6 @@
 /*!
  * Skid: https://github.com/jaydenseric/Skid
- * @version v3.0.0
+ * @version v4.0.0
  * @author Jayden Seric
  * @license MIT
  */
@@ -107,7 +107,7 @@ Skid.Slider = function (options) {
           document.removeEventListener(panEventName, pan)
           window.cancelAnimationFrame(scheduledPan)
           self.element.classList.remove(self.draggingClass)
-           // If any distance was dragged, update active slide
+          // If any distance was dragged, update active slide
           if (x !== originalX) {
             // Determine the closest slide
             var closestSlideIndex = Math.round(panPosition / -100)
@@ -119,10 +119,10 @@ Skid.Slider = function (options) {
             // No slides beyond first or last
             if (closestSlideIndex < 0) closestSlideIndex = 0
             if (closestSlideIndex > self.slideCount - 1) closestSlideIndex = self.slideCount - 1
-            var closestSlideId = self.slides.children[closestSlideIndex].id
+            var closestSlide = self.slides.children[closestSlideIndex]
             // Only update URL hash if slide is not already active
-            if (closestSlideId === self.hurdler.getTargetId()) self.activateSlide(closestSlideId)
-            else self.hurdler.setHash(closestSlideId)
+            if (closestSlide === self.hurdler.target) self.activateSlide(closestSlide.id)
+            else self.hurdler.setTarget(closestSlide)
           }
         })
       })
@@ -139,9 +139,13 @@ Skid.Slider = function (options) {
     enable('touchstart', 'touchmove', 'touchend')
   }
   // Enable URL hash control via Hurdler
-  self.hurdler.hurdles.push({
-    test: function () { return this.parentNode === self.slides },
-    callback: function () { self.activateSlide(this) }
+  self.hurdler.addHurdle({
+    test: element => {
+      return element.parentElement === self.slides
+    },
+    onJump: element => {
+      self.activateSlide(element)
+    }
   })
 }
 

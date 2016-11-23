@@ -1,6 +1,6 @@
 {
   "name": "skid-slider",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "An ultra-lightweight slider that supports touch.",
   "author": {
     "name": "Jayden Seric",
@@ -42,7 +42,7 @@
     "prepublish": "npm run build"
   },
   "peerDependencies": {
-    "hurdler": "^3.0.0"
+    "hurdler": "^4.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.18.2",

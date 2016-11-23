@@ -1,4 +1,4 @@
-# ![Skid](https://cdn.rawgit.com/jaydenseric/Skid/v3.0.0/skid-logo.svg)
+# ![Skid](https://cdn.rawgit.com/jaydenseric/Skid/v4.0.0/skid-logo.svg)
 
 ![NPM version](https://img.shields.io/npm/v/skid-slider.svg?style=flat-square) ![Github issues](https://img.shields.io/github/issues/jaydenseric/Skid.svg?style=flat-square) ![Github stars](https://img.shields.io/github/stars/jaydenseric/Skid.svg?style=flat-square)
 
